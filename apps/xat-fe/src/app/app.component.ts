@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { ITest } from '@realtime-xat/interfaces';
+import { Observable } from 'rxjs';
+import { TestService } from './services/test-service/test.service';
 
 @Component({
   selector: 'realtime-xat-root',
@@ -6,5 +9,11 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  title = 'xat-fe';
+
+  testValue: Observable<ITest> = this.service.getTest();
+
+  /**
+   *
+   */
+  constructor(private service: TestService) {}
 }

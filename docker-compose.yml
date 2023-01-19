@@ -1,0 +1,69 @@
+version: "3.8"
+
+# networks:
+#   corp:
+#     driver: bridge
+
+services:
+  ##For docker deployment
+  # api-server:
+  #   container_name: api-server
+  #   build:
+  #     context: ./
+  #     cache_from:
+  #       - my-base-image:nx-base
+  #     dockerfile: ./apps/xat-be/Dockerfile
+  #     args:
+  #       NODE_ENV: "development"
+  #       BUILD_FLAG: ""
+  #   image: api-server:nx-dev
+  #   ports:
+  #     - 4939:4939
+      # depends_on:
+      #   - postgres
+  #   environment:
+  #     NODE_ENV: "development"
+        # DATABASE_URL: postgres://user:password@postgres:5432/db
+  #     PORT: 4939
+  #   networks:
+  #     - corp
+  #   restart: on-failure
+
+  # angular-client:
+  #   container_name: angular-client
+  #   build:
+  #     context: ./
+  #     cache_from:
+  #       - nginx:1.19.2
+  #     dockerfile: ./apps/xat-fe/Dockerfile
+  #     args:
+  #       NODE_ENV: "development"
+  #       BUILD_FLAG: ""
+  #   image: angular-client:nx-dev
+  #   ports:
+  #     - 4900:80
+  #   environment:
+  #     NODE_ENV: "development"
+  #     PORT: 4900
+  #   networks:
+  #     - corp
+  #   restart: on-failure
+
+  postgres:
+    image: postgres:10.4
+    environment:
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_DB: "db"
+    ports:
+      - 35000:5432
+
+  postgres_admin:
+    image: dpage/pgadmin4:4.28
+    depends_on:
+      - postgres
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "password"
+    ports:
+      - 5050:80

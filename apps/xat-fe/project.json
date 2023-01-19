@@ -53,7 +53,8 @@
           "browserTarget": "xat-fe:build:production"
         },
         "development": {
-          "browserTarget": "xat-fe:build:development"
+          "browserTarget": "xat-fe:build:development",
+          "proxyConfig": "apps/xat-fe/proxy.conf.json"
         }
       },
       "defaultConfiguration": "development",
