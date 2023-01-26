@@ -7,16 +7,26 @@
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/apps/xat-fe",
         "index": "apps/xat-fe/src/index.html",
         "main": "apps/xat-fe/src/main.ts",
-        "polyfills": ["zone.js"],
+        "polyfills": [
+          "zone.js"
+        ],
         "tsConfig": "apps/xat-fe/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
-        "assets": ["apps/xat-fe/src/favicon.ico", "apps/xat-fe/src/assets"],
-        "styles": ["apps/xat-fe/src/styles.scss"],
+        "assets": [
+          "apps/xat-fe/src/favicon.ico",
+          "apps/xat-fe/src/assets"
+        ],
+        "styles": [
+          "@angular/material/prebuilt-themes/indigo-pink.css",
+          "apps/xat-fe/src/styles.scss"
+        ],
         "scripts": []
       },
       "configurations": {
@@ -70,14 +80,21 @@
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["apps/xat-fe/**/*.ts", "apps/xat-fe/**/*.html"]
+        "lintFilePatterns": [
+          "apps/xat-fe/**/*.ts",
+          "apps/xat-fe/**/*.html"
+        ]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
       "options": {
         "jestConfig": "apps/xat-fe/jest.config.ts",
         "passWithNoTests": true
