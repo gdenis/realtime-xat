@@ -6,6 +6,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavigationComponent } from './navigation/navigation.component';
 import { MaterialModule } from './material.module';
 import { AppComponent } from './app.component';
+import { JwtModule } from '@auth0/angular-jwt';
+
+export function tokenGetter(){
+  return localStorage.getItem('nestjs_chat_app')
+}
 
 @NgModule({
   imports: [
@@ -14,6 +19,12 @@ import { AppComponent } from './app.component';
     HttpClientModule,
     BrowserAnimationsModule,
     MaterialModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        allowedDomains: ['localhost:3333']
+      },
+    }),
   ],
   declarations: [AppComponent, NavigationComponent],
   providers: [NavigationComponent],

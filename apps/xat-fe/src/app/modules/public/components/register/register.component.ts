@@ -1,25 +1,29 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { CustomValidators } from 'apps/xat-fe/src/app/_helpers/custom-validators';
+import { Router } from '@angular/router';
+import { tap } from 'rxjs';
+import { UserService } from '../../../../services/user/user.service';
+import { CustomValidators } from '../../../../_helpers/custom-validators';
 
 @Component({
   selector: 'realtime-xat-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
 })
-export class RegisterComponent implements OnInit{
+export class RegisterComponent {
+  form: FormGroup = new FormGroup(
+    {
+      email: new FormControl(null, [Validators.required, Validators.email]),
+      username: new FormControl(null, [Validators.required]),
+      password: new FormControl(null, [Validators.required]),
+      passwordConfirm: new FormControl(null, [Validators.required]),
+    },
+    {
+      validators: CustomValidators.passwordsMatching,
+    }
+  );
 
-  form: FormGroup = new FormGroup({
-    email: new FormControl(null, [Validators.required, Validators.email]),
-    username: new FormControl(null, [Validators.required]),
-    password: new FormControl(null, [Validators.required]),
-    passwordConfirm: new FormControl(null, [Validators.required])
-  },
-  {
-    validators: CustomValidators.passwordsMatching
-  });
-
-  constructor(){}
+  constructor(private userService: UserService, private router: Router) {}
 
   get email(): FormControl {
     return this.form.get('email') as FormControl;
@@ -37,12 +41,16 @@ export class RegisterComponent implements OnInit{
     return this.form.get('passwordConfirm') as FormControl;
   }
 
-  ngOnInit(): void {
-    throw new Error('Method not implemented.');
+  register() {
+    if (this.form.valid) {
+      this.userService
+        .create({
+          email: this.email.value,
+          password: this.password.value,
+          username: this.username.value,
+        })
+        .pipe(tap(() => this.router.navigate(['../login'])))
+        .subscribe();
+    }
   }
-
-  register(){
-
-  }
-
 }

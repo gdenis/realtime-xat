@@ -1,15 +1,19 @@
-import { AbstractControl, ValidationErrors } from "@angular/forms";
+import { AbstractControl, ValidationErrors } from '@angular/forms';
 
 export class CustomValidators {
-
   static passwordsMatching(control: AbstractControl): ValidationErrors | null {
     const password = control.get('password')?.value;
     const passwordConfirm = control.get('passwordConfirm')?.value;
 
-    if ((password != null && passwordConfirm != null ) && (password === passwordConfirm)) {
+    if (
+      password != null &&
+      passwordConfirm != null &&
+      password === passwordConfirm
+    ) {
       return null;
-    }else{
-      return {passwordsNotMatchin: true}
+    } else {
+      control.get('passwordConfirm')?.setErrors({ passwordsNotMatching: true })
+      return { passwordsNotMatching: true };
     }
   }
 }

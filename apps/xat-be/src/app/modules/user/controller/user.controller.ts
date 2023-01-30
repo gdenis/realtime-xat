@@ -7,6 +7,8 @@ import { CreateUserDto, LoginUserDto } from '../models/dto/user.dto';
 import { UserHelperService } from '../service/user-helper/user-helper.service';
 import { UserService } from '../service/user.service';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { Public } from '../../auth/guards/public-auth.guard';
 
 @Controller('user')
 export class UserController {
@@ -22,7 +24,9 @@ export class UserController {
       .pipe(switchMap((user: IUser) => this.userService.create(user)));
   }
 
-  @UseGuards(JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard)
+  //Needed for Swagger Documentation
+  @ApiBearerAuth()
   @Get('find-all')
   findAll(
     @Query('page') page = 1,
@@ -33,6 +37,7 @@ export class UserController {
   }
 
   @Post('login')
+  @Public()
   login(@Body () loginUserDto: LoginUserDto): Observable<ILoginResponse> {
     return this.userHelperService.loginUserDtoToEntity(loginUserDto).pipe(
       switchMap((user: IUser) => this.userService.login(user).pipe(
