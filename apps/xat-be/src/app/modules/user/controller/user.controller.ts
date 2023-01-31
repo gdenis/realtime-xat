@@ -26,7 +26,7 @@ export class UserController {
 
   //@UseGuards(JwtAuthGuard)
   //Needed for Swagger Documentation
-  @ApiBearerAuth()
+//  @ApiBearerAuth()
   @Get('find-all')
   findAll(
     @Query('page') page = 1,
@@ -37,7 +37,7 @@ export class UserController {
   }
 
   @Post('login')
-  @Public()
+//  @Public()
   login(@Body () loginUserDto: LoginUserDto): Observable<ILoginResponse> {
     return this.userHelperService.loginUserDtoToEntity(loginUserDto).pipe(
       switchMap((user: IUser) => this.userService.login(user).pipe(

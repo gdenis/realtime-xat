@@ -23,22 +23,22 @@ async function bootstrap() {
     .setDescription('The Xat API description')
     .setVersion('1.0')
     .addTag('xat')
-    .addBearerAuth(
-      {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-      },
-      'access-token'
-    )
+    // .addBearerAuth(
+    //   {
+    //     type: 'http',
+    //     scheme: 'bearer',
+    //     bearerFormat: 'JWT',
+    //   },
+    //   'access-token'
+    // )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup(globalPrefix, app, document);
 
   //Set AuthGuard as global guard to all routes.
-  const reflector = app.get(Reflector);
-  app.useGlobalGuards(new JwtAuthGuard(reflector));
+  // const reflector = app.get(Reflector);
+  // app.useGlobalGuards(new JwtAuthGuard(reflector));
 
   await app.listen(port);
   Logger.log(
