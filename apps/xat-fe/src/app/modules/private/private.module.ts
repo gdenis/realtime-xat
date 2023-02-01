@@ -7,10 +7,6 @@ import { MaterialModule } from '../../material.module';
 
 @NgModule({
   declarations: [DashboardComponent],
-  imports: [
-    CommonModule,
-    PrivateRoutingModule,
-    MaterialModule
-  ],
+  imports: [CommonModule, PrivateRoutingModule, MaterialModule],
 })
 export class PrivateModule {}

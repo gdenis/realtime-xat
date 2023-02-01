@@ -6,13 +6,11 @@ import { IUser } from '@realtime-xat/interfaces';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private readonly jwtService: JwtService,
-  ) {}
+  constructor(private readonly jwtService: JwtService) {}
 
-  generateJwt(user: IUser): Observable<string>{
-    const payload = {...user};
-    return from(this.jwtService.signAsync(payload))
+  generateJwt(user: IUser): Observable<string> {
+    const payload = { ...user };
+    return from(this.jwtService.signAsync(payload));
   }
 
   hashPassword(password: string): Observable<string> {
@@ -24,5 +22,9 @@ export class AuthService {
     storedPasswordHash: string
   ): Observable<any> {
     return from(bcrypt.compare(password, storedPasswordHash));
+  }
+
+  verifyJwt(jwt: string): Promise<any> {
+    return this.jwtService.verifyAsync(jwt);
   }
 }

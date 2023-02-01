@@ -26,30 +26,36 @@ export class UserController {
 
   //@UseGuards(JwtAuthGuard)
   //Needed for Swagger Documentation
-//  @ApiBearerAuth()
+  @ApiBearerAuth('access-token')
   @Get('find-all')
   findAll(
     @Query('page') page = 1,
     @Query('limit') limit = 10
-  ): Observable<Pagination<IUser>>{
-    limit = limit > 100 ? 100: limit;
-    return this.userService.findAll({page, limit, route: `${environment.API_PAGINATION_ROUTE}user`});
+  ): Observable<Pagination<IUser>> {
+    limit = limit > 100 ? 100 : limit;
+    return this.userService.findAll({
+      page,
+      limit,
+      route: `${environment.API_PAGINATION_ROUTE}user`,
+    });
   }
 
   @Post('login')
-//  @Public()
-  login(@Body () loginUserDto: LoginUserDto): Observable<ILoginResponse> {
+  //  @Public()
+  login(@Body() loginUserDto: LoginUserDto): Observable<ILoginResponse> {
     return this.userHelperService.loginUserDtoToEntity(loginUserDto).pipe(
-      switchMap((user: IUser) => this.userService.login(user).pipe(
-        map((jwt: string)=> {
-          const loginResponse: ILoginResponse ={
-            access_token: jwt,
-            token_type: 'JWT',
-            expires_in: '10h'
-          };
-          return loginResponse;
-        })
-      ))
+      switchMap((user: IUser) =>
+        this.userService.login(user).pipe(
+          map((jwt: string) => {
+            const loginResponse: ILoginResponse = {
+              access_token: jwt,
+              token_type: 'JWT',
+              expires_in: '10h',
+            };
+            return loginResponse;
+          })
+        )
+      )
     );
   }
 }

@@ -23,14 +23,14 @@ async function bootstrap() {
     .setDescription('The Xat API description')
     .setVersion('1.0')
     .addTag('xat')
-    // .addBearerAuth(
-    //   {
-    //     type: 'http',
-    //     scheme: 'bearer',
-    //     bearerFormat: 'JWT',
-    //   },
-    //   'access-token'
-    // )
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+      },
+      'access-token'
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

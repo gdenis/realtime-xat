@@ -46,8 +46,6 @@ export class UserService {
     return from(this.userRepository.findOneBy({ id: id }));
   }
 
-
-
   private mailExists(email: string): Observable<boolean> {
     return this.findByEmail(email).pipe(
       map((user: IUser) => {
@@ -73,30 +71,36 @@ export class UserService {
     return from(this.userRepository.findOne(options));
   }
 
+  public getOne(id: number): Promise<IUser> {
+    return this.userRepository.findOneByOrFail({ id: id });
+  }
+
   login(user: IUser): Observable<string> {
     return this.findByEmail(user.email).pipe(
       switchMap((foundUser: IUser) => {
         if (foundUser) {
-          return this.authService.validatePassword(user.password, foundUser.password).pipe(
-            switchMap((matches: boolean) => {
-              if (matches) {
-                return this.findOne(foundUser.id).pipe(
-                  switchMap((payload: IUser) => this.authService.generateJwt(payload))
-                )
-              } else {
-                throw new HttpException(
-                  'Login was not successfull, wrong credentials',
-                  HttpStatus.UNAUTHORIZED
-                );
-              }
-            })
-          );
+          return this.authService
+            .validatePassword(user.password, foundUser.password)
+            .pipe(
+              switchMap((matches: boolean) => {
+                if (matches) {
+                  return this.findOne(foundUser.id).pipe(
+                    switchMap((payload: IUser) =>
+                      this.authService.generateJwt(payload)
+                    )
+                  );
+                } else {
+                  throw new HttpException(
+                    'Login was not successfull, wrong credentials',
+                    HttpStatus.UNAUTHORIZED
+                  );
+                }
+              })
+            );
         } else {
           throw new HttpException('User not fund', HttpStatus.NOT_FOUND);
         }
       })
     );
   }
-
-
 }
