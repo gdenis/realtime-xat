@@ -1,8 +1,11 @@
+import { IRoom } from "../room/room.interface";
+
 export interface IUser {
   id?: number,
   username?: string,
-  email: string,
+  email?: string,
   password?: string,
+  rooms?: IRoom[];
   emailToLowerCase?(): void;
 }
 

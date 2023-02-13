@@ -1,26 +1,26 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
+  "version": "0.2.0",
+  "configurations": [
       {
-        "name": "Attach",
-        "port": 9229,
-        "request": "attach",
-        "skipFiles": [
-          "<node_internals>/**"
-        ],
-        "type": "node"
-      },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch Program",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "program": "${file}"
-        }
-    ]
+          "name": "Debug my NESTJS app",
+          "type": "node",
+          "request": "launch",
+          "args": ["${workspaceFolder}/apps/xat-be/src/main.ts"], // Path to main entry file
+          "runtimeArgs": ["--require", "ts-node/register", "--require", "tsconfig-paths/register", "--experimental-modules"],
+          "internalConsoleOptions": "openOnSessionStart",
+          "env": {
+              "NODE_ENV": "local",
+              "NODE_PORT": "8000",
+              "TS_NODE_PROJECT": "${workspaceFolder}/apps/xat-be/tsconfig.debug.json", // Specify the tsconfig to use. See content of it below.
+              "IS_DEBUG_MODE": "true" // Custom env variable to detect debug mode
+          },
+          "sourceMaps": true,
+          "console": "internalConsole",
+          "outputCapture": "std",
+          "resolveSourceMapLocations": [
+              "${workspaceFolder}/apps/xat-be/**",
+              "!**/node_modules/**" // Disable the "could not read source map" error for node_modules
+          ]
+      }
+  ]
 }

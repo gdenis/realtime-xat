@@ -8,5 +8,7 @@ import { MaterialModule } from '../../material.module';
 @NgModule({
   declarations: [DashboardComponent],
   imports: [CommonModule, PrivateRoutingModule, MaterialModule],
+  providers: [],
+
 })
 export class PrivateModule {}

@@ -31,6 +31,10 @@ export class AppModule implements NestModule {
         {
           path: '/api/user/login',
           method: RequestMethod.POST,
+        },
+        {
+          path: '/api/user/create-user',
+          method: RequestMethod.POST,
         }
       )
       .forRoutes('');

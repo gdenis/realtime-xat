@@ -3,12 +3,16 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
   WebSocketServer,
+  SubscribeMessage,
+  ConnectedSocket,
+  MessageBody,
 } from '@nestjs/websockets';
 import { AuthService } from '../../auth/auth-services/auth.service';
 import { Server, Socket } from 'socket.io';
-import { IUser } from '@realtime-xat/interfaces';
+import { IRoom, IUser } from '@realtime-xat/interfaces';
 import { UserService } from '../../user/service/user.service';
 import { UnauthorizedException } from '@nestjs/common';
+import { RoomService } from '../services/room-service/room.service';
 
 @WebSocketGateway({
   cors: {
@@ -22,13 +26,12 @@ import { UnauthorizedException } from '@nestjs/common';
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private authService: AuthService,
-    private userService: UserService
+    private userService: UserService,
+    private roomService: RoomService
   ) {}
 
   @WebSocketServer()
   server: Server;
-
-  title: string[] = [];
 
   async handleConnection(socket: Socket) {
     try {
@@ -40,26 +43,36 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       if (!user) {
         return this.disconect(socket);
       } else {
-        this.title.push('Value' + Math.random().toString());
-        this.server.emit('message', this.title);
+        socket.data.user = user;
+
+        const rooms = await this.roomService.getRoomsForUser(user.id, {
+          page: 1,
+          limit: 10,
+        });
+
+        console.log('Handshake');
+
+        //Only emit rooms to specific connected client.
+        return this.server.to(socket.id).emit('rooms', rooms);
+
       }
-
-      console.log('On Connect');
-
     } catch {
       return this.disconect(socket);
     }
-
   }
 
   handleDisconnect(socket: Socket) {
-    socket.disconnect()
+    socket.disconnect();
   }
 
   private disconect(socket: Socket) {
-
     socket.emit('Error', new UnauthorizedException());
     socket.disconnect();
+  }
 
+  @SubscribeMessage('createRoom')
+  async onCreateRoom(@ConnectedSocket() socket: Socket, @MessageBody() room: IRoom): Promise<IRoom> {
+    console.log('Message');
+    return this.roomService.createRoom(room, socket.data.user);
   }
 }
