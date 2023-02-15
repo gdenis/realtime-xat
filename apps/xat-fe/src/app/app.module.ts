@@ -7,6 +7,8 @@ import { NavigationComponent } from './navigation/navigation.component';
 import { MaterialModule } from './material.module';
 import { AppComponent } from './app.component';
 import { JwtModule } from '@auth0/angular-jwt';
+import { SocketIoModule } from 'ngx-socket-io';
+import { CustomSocket } from './modules/private/sockets/custom-socket';
 
 export function tokenGetter() {
   return localStorage.getItem('nestjs_chat_app');
@@ -19,6 +21,7 @@ export function tokenGetter() {
     HttpClientModule,
     BrowserAnimationsModule,
     MaterialModule,
+    SocketIoModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
@@ -27,7 +30,7 @@ export function tokenGetter() {
     }),
   ],
   declarations: [AppComponent, NavigationComponent],
-  providers: [NavigationComponent],
+  providers: [NavigationComponent, CustomSocket],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

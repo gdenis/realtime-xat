@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { ChatService } from '../../services/chat-service/chat.service';
 
 @Component({
@@ -6,12 +7,21 @@ import { ChatService } from '../../services/chat-service/chat.service';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   rooms$ = this.chatService.getMyRooms();
+
+  subscription?: Subscription;
 
   constructor(private chatService: ChatService) {}
 
+
   ngOnInit(): void {
-    this.chatService.creareRoom();
+   this.subscription = this.chatService.createRoom();
   }
+
+  ngOnDestroy(): void {
+    if(this.subscription) this.subscription.unsubscribe();
+  }
+
+
 }

@@ -5,7 +5,7 @@ import {
   WebSocketServer,
   SubscribeMessage,
   ConnectedSocket,
-  MessageBody,
+  MessageBody
 } from '@nestjs/websockets';
 import { AuthService } from '../../auth/auth-services/auth.service';
 import { Server, Socket } from 'socket.io';
@@ -45,16 +45,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       } else {
         socket.data.user = user;
 
+        this.server.to(socket.id).emit('user-data-ready');
+
         const rooms = await this.roomService.getRoomsForUser(user.id, {
           page: 1,
           limit: 10,
         });
 
-        console.log('Handshake');
+       // console.log('Handshake socket.id: ' + socket.id);
 
         //Only emit rooms to specific connected client.
         return this.server.to(socket.id).emit('rooms', rooms);
-
       }
     } catch {
       return this.disconect(socket);
@@ -71,8 +72,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('createRoom')
-  async onCreateRoom(@ConnectedSocket() socket: Socket, @MessageBody() room: IRoom): Promise<IRoom> {
-    console.log('Message');
+  async onCreateRoom(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() room: IRoom
+  ) {
+   // console.log('Message socket.id: ' + socket.id);
     return this.roomService.createRoom(room, socket.data.user);
   }
 }

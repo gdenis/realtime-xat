@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
 import { IRoom, IRoomPaginate, IUser } from '@realtime-xat/interfaces';
+import { Subscription } from 'rxjs';
 import { CustomSocket } from '../../sockets/custom-socket';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatService {
-  constructor(private socket: CustomSocket) {}
+  constructor(private socket: CustomSocket) {
+    this.socket.connect();
+  }
 
   sendMessage() {}
 
@@ -18,7 +21,7 @@ export class ChatService {
     return this.socket.fromEvent<IRoomPaginate>('rooms');
   }
 
-  creareRoom() {
+  createRoom(): Subscription {
     const user2: IUser = {
       id: 1,
     };
@@ -28,6 +31,8 @@ export class ChatService {
       users: [user2],
     };
 
-    this.socket.emit('createRoom', room);
+    return this.socket.fromEvent('user-data-ready').subscribe(() => {
+      this.socket.emit('createRoom', room);
+    });
   }
 }
