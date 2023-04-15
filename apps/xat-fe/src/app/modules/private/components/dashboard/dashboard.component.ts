@@ -1,4 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { MatSelectionListChange } from '@angular/material/list';
+import { PageEvent } from '@angular/material/paginator';
 import { Subscription } from 'rxjs';
 import { ChatService } from '../../services/chat-service/chat.service';
 
@@ -7,21 +9,34 @@ import { ChatService } from '../../services/chat-service/chat.service';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
-export class DashboardComponent implements OnInit, OnDestroy {
+export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   rooms$ = this.chatService.getMyRooms();
+  selectedRoom = null;
+  userReady = false;
 
-  subscription?: Subscription;
+  subscription: Subscription = new Subscription();
 
   constructor(private chatService: ChatService) {}
 
+  ngAfterViewInit(): void {
+    if (this.chatService.IsReady) this.chatService.emitPaginateRooms(10, 0);
+  }
 
-  ngOnInit(): void {
-   this.subscription = this.chatService.createRoom();
+  onSelectRoom(event: MatSelectionListChange) {
+    this.selectedRoom = event.source.selectedOptions.selected[0].value;
+  }
+
+  ngOnInit() {
+    this.chatService.awaitInfoReady().then((ready) => {
+      if (ready) this.chatService.emitPaginateRooms(10, 0);
+    });
   }
 
   ngOnDestroy(): void {
-    if(this.subscription) this.subscription.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
-
+  onPaginateRooms(event: PageEvent) {
+    this.chatService.emitPaginateRooms(event.pageSize, event.pageIndex);
+  }
 }
